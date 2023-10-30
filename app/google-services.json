@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "640258400709",
+    "project_id": "neisisnotes",
+    "storage_bucket": "neisisnotes.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:640258400709:android:f545da032d79c31cd3abac",
+        "android_client_info": {
+          "package_name": "curs.narcis.neisisnotes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNQiKekz4wVNEuVFgJRmAYWmU3ibw-XQc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
