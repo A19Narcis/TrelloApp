@@ -9,6 +9,7 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.toObject
 import curs.narcis.neisisnotes.activities.CreateBoardActivity
 import curs.narcis.neisisnotes.activities.MainActivity
+import curs.narcis.neisisnotes.activities.MembersActivity
 import curs.narcis.neisisnotes.activities.MyProfileActivity
 import curs.narcis.neisisnotes.activities.SignInActivity
 import curs.narcis.neisisnotes.activities.SignUpActivity
@@ -28,8 +29,9 @@ class FirestoreClass {
             .get()
             .addOnSuccessListener { document ->
                 Log.i(taskListActivity.javaClass.simpleName, document.toString())
-
-                taskListActivity.boardDetails(document.toObject(Board::class.java)!!)
+                val board = document.toObject(Board::class.java)
+                board?.documentId = document.id
+                taskListActivity.boardDetails(board!!)
 
             }
             .addOnFailureListener { e ->
@@ -85,6 +87,22 @@ class FirestoreClass {
             }
     }
 
+    fun addUpdateTaskList(activity: TaskListActivity, board: Board){
+        val taskListHashMap = HashMap<String, Any>()
+        taskListHashMap[Constants.TASK_LIST] = board.taskList
+
+        mFirestore.collection(Constants.BOARDS)
+            .document(board.documentId!!)
+            .update(taskListHashMap)
+            .addOnSuccessListener {
+                Log.i(activity.javaClass.simpleName, "Task list added successfully")
+                activity.addUpdateTaskListSuccess()
+            }
+            .addOnFailureListener {e ->
+                activity.hideProgressDialog()
+                Log.e("ERROR_CLASS", "Error creating a board: ${e.message.toString()}", e)
+            }
+    }
 
     fun updateUserProfileData(activity: MyProfileActivity, userHashMap: HashMap<String, Any>) {
         mFirestore.collection(Constants.USERS).document(getCurrentUserID()).update(userHashMap)
@@ -140,6 +158,27 @@ class FirestoreClass {
         }
 
         return currentUserID
+    }
+
+    fun getAssignedMembersListDetails(activity: MembersActivity, assignedTo: ArrayList<String>){
+        mFirestore.collection(Constants.USERS)
+            .whereIn(Constants.ID, assignedTo)
+            .get()
+            .addOnSuccessListener {document ->
+                Log.i(activity.javaClass.simpleName, document.documents.toString())
+
+                val usersList : ArrayList<User> = ArrayList()
+                for (i in document.documents){
+                    val user = i.toObject(User::class.java)!!
+                    usersList.add(user)
+                }
+
+                activity.setUpMembersList(usersList)
+            }
+            .addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e("ERROR_CLASS", "Error getting members: ${e.message.toString()}", e)
+            }
     }
 
 
