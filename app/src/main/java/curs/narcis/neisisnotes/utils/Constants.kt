@@ -22,6 +22,14 @@ object Constants {
 
     const val BOARD_DETAIL: String = "board_detail"
 
+    const val TASK_LIST_ITEM_POSITION: String = "task_list_item_position"
+    const val CARD_LIST_ITEM_POSITION: String = "card_list_item_position"
+
+    const val BOARD_MEMBERS_LIST: String = "board_members_list"
+
+    const val SELECT: String = "Select"
+    const val UN_SELECT: String = "UnSelect"
+
     const val READ_STORAGE_PERMISSION = 1
 
     fun getFileExtension(activity: Activity, uri: Uri?): String? {

@@ -18,8 +18,7 @@ data class Board (
         parcel.createStringArrayList()!!,
         parcel.readString(),
         parcel.createTypedArrayList(Task.CREATOR)!!
-    ) {
-    }
+    )
 
     override fun describeContents(): Int {
         TODO("Not yet implemented")

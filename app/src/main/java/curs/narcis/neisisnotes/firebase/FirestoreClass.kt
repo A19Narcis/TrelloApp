@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.toObject
+import curs.narcis.neisisnotes.activities.CardDetailsActivity
 import curs.narcis.neisisnotes.activities.CreateBoardActivity
 import curs.narcis.neisisnotes.activities.MainActivity
 import curs.narcis.neisisnotes.activities.MembersActivity
@@ -87,7 +88,7 @@ class FirestoreClass {
             }
     }
 
-    fun addUpdateTaskList(activity: TaskListActivity, board: Board){
+    fun addUpdateTaskList(activity: Activity, board: Board){
         val taskListHashMap = HashMap<String, Any>()
         taskListHashMap[Constants.TASK_LIST] = board.taskList
 
@@ -96,10 +97,18 @@ class FirestoreClass {
             .update(taskListHashMap)
             .addOnSuccessListener {
                 Log.i(activity.javaClass.simpleName, "Task list added successfully")
-                activity.addUpdateTaskListSuccess()
+                if (activity is TaskListActivity){
+                    activity.addUpdateTaskListSuccess()
+                } else if (activity is CardDetailsActivity) {
+                    activity.addUpdateTaskListSuccess()
+                }
             }
             .addOnFailureListener {e ->
-                activity.hideProgressDialog()
+                if (activity is TaskListActivity){
+                    activity.hideProgressDialog()
+                } else if (activity is CardDetailsActivity) {
+                    activity.hideProgressDialog()
+                }
                 Log.e("ERROR_CLASS", "Error creating a board: ${e.message.toString()}", e)
             }
     }
@@ -160,7 +169,7 @@ class FirestoreClass {
         return currentUserID
     }
 
-    fun getAssignedMembersListDetails(activity: MembersActivity, assignedTo: ArrayList<String>){
+    fun getAssignedMembersListDetails(activity: Activity, assignedTo: ArrayList<String>){
         mFirestore.collection(Constants.USERS)
             .whereIn(Constants.ID, assignedTo)
             .get()
@@ -173,13 +182,58 @@ class FirestoreClass {
                     usersList.add(user)
                 }
 
-                activity.setUpMembersList(usersList)
+                if (activity is MembersActivity){
+                    activity.setUpMembersList(usersList)
+                } else if (activity is TaskListActivity){
+                    activity.boardMembersDetailsList(usersList)
+                }
+
             }
             .addOnFailureListener { e ->
-                activity.hideProgressDialog()
+                if (activity is MembersActivity){
+                    activity.hideProgressDialog()
+                } else if (activity is TaskListActivity){
+                    activity.hideProgressDialog()
+                }
+
                 Log.e("ERROR_CLASS", "Error getting members: ${e.message.toString()}", e)
             }
     }
 
+    fun getMemberDetails(activity: MembersActivity, email: String){
+        mFirestore.collection(Constants.USERS)
+            .whereEqualTo(Constants.EMAIL, email)
+            .get()
+            .addOnSuccessListener { document ->
+                Log.i(activity.javaClass.simpleName, document.documents.toString())
+                if (document.documents.size > 0){
+                    val user = document.documents[0].toObject(User::class.java)!!
+                    activity.memberDetails(user)
+                } else {
+                    activity.hideProgressDialog()
+                    activity.showErrorSnackBar("No such member found")
+                }
+            }
+            .addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e("ERROR_CLASS", "Error while getting user details: ${e.message.toString()}", e)
+            }
+    }
+
+    fun assignMembersToBoard(activity: MembersActivity, board: Board, user: User){
+        val assignedToHashMap = HashMap<String, Any>()
+        assignedToHashMap[Constants.ASSIGNED_TO] = board.assignedTo
+
+        mFirestore.collection(Constants.BOARDS)
+            .document(board.documentId!!)
+            .update(assignedToHashMap)
+            .addOnSuccessListener {
+                activity.memberAssignSuccess(user)
+            }
+            .addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e("ERROR_CLASS", "Error while updating a board: ${e.message.toString()}", e)
+            }
+    }
 
 }

@@ -1,6 +1,8 @@
 package curs.narcis.neisisnotes.activities
 
+import android.app.Activity
 import android.app.Dialog
+import android.health.connect.datatypes.units.Mass
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,6 +11,7 @@ import android.view.MenuItem
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import android.window.OnBackInvokedDispatcher
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import curs.narcis.neisisnotes.R
@@ -24,6 +27,9 @@ class MembersActivity : BaseActivity() {
     private var binding: ActivityMembersBinding? = null
 
     private lateinit var mBoardDetails: Board
+    private lateinit var mAssignedMembersList: ArrayList<User>
+
+    private var anyChangesMade: Boolean = false
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +47,13 @@ class MembersActivity : BaseActivity() {
         FirestoreClass().getAssignedMembersListDetails(this, mBoardDetails.assignedTo)
     }
 
+    fun memberDetails(user: User){
+        mBoardDetails.assignedTo.add(user.id!!)
+        FirestoreClass().assignMembersToBoard(this, mBoardDetails, user)
+    }
+
     fun setUpMembersList(list: ArrayList<User>){
+        mAssignedMembersList = list
         hideProgressDialog()
         binding?.rvMembersList?.layoutManager = LinearLayoutManager(this)
         binding?.rvMembersList?.setHasFixedSize(true)
@@ -72,7 +84,8 @@ class MembersActivity : BaseActivity() {
             val email = dialog.findViewById<EditText>(R.id.et_email_search_member).text.toString()
             if (email.isNotEmpty()){
                 dialog.dismiss()
-                //TODO implement adding member logic
+                showProgressDialog(resources.getString(R.string.please_wait))
+                FirestoreClass().getMemberDetails(this, email)
             } else {
                 Toast.makeText(this@MembersActivity, "Please enter members email address.", Toast.LENGTH_SHORT).show()
             }
@@ -93,5 +106,24 @@ class MembersActivity : BaseActivity() {
         binding?.toolbarMembersActivity?.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        if (anyChangesMade){
+            setResult(Activity.RESULT_OK)
+        }
+
+        super.onBackPressed()
+    }
+
+
+    fun memberAssignSuccess(user: User){
+        hideProgressDialog()
+        mAssignedMembersList.add(user)
+
+        anyChangesMade = true
+
+        setUpMembersList(mAssignedMembersList)
     }
 }

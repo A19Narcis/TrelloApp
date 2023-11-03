@@ -24,27 +24,26 @@ open class MemberListItemsAdapter(private val context: Context, private var list
         val model = list[position]
 
         if (holder is MyViewHolder) {
-            Glide.with(context).load(model.image).centerCrop().into(holder.itemView.findViewById(R.id.iv_member_image))
+            Glide.with(context).load(model.image).centerCrop().placeholder(R.drawable.ic_user_place_holder).into(holder.itemView.findViewById(R.id.iv_member_image))
 
             holder.itemView.findViewById<TextView>(R.id.tv_member_name).text = model.name
             holder.itemView.findViewById<TextView>(R.id.tv_member_email).text = model.email
 
-            /*if (model.se) {
-                holder.itemView.iv_selected_member.visibility = View.VISIBLE
+            if (model.selected == true) {
+                holder.itemView.findViewById<ImageView>(R.id.iv_selected_member).visibility = View.VISIBLE
             } else {
-                holder.itemView.iv_selected_member.visibility = View.GONE
+                holder.itemView.findViewById<ImageView>(R.id.iv_selected_member).visibility = View.GONE
             }
 
             holder.itemView.setOnClickListener {
-
                 if (onClickListener != null) {
-                    if (model.selected) {
+                    if (model.selected == true) {
                         onClickListener!!.onClick(position, model, Constants.UN_SELECT)
                     } else {
                         onClickListener!!.onClick(position, model, Constants.SELECT)
                     }
                 }
-            }*/
+            }
         }
     }
 

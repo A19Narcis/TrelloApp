@@ -72,7 +72,7 @@ class CreateBoardActivity : BaseActivity() {
                 if (data != null){
                     mSelectedImageUri = data.data
                     try {
-                        binding?.ivBoardImage?.let { Glide.with(this).load(mSelectedImageUri).into(it) }
+                        binding?.ivBoardImage?.let { Glide.with(this).load(mSelectedImageUri).placeholder(R.drawable.ic_user_place_holder).into(it) }
                     } catch (e: IOException){
                         e.printStackTrace()
                     }

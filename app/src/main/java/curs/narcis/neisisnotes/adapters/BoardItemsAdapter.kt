@@ -32,7 +32,7 @@ open class BoardItemsAdapter(private val context: Context, private var list : Ar
         val image : CircleImageView = holder.itemView.findViewById(R.id.iv_board_image)
 
         if (holder is MyViewHolder){
-            Glide.with(context).load(model.image).into(image)
+            Glide.with(context).load(model.image).placeholder(R.drawable.ic_board_place_holder).into(image)
             holder.itemView.findViewById<TextView>(R.id.tv_name).text = model.name
             holder.itemView.findViewById<TextView>(R.id.tv_created_by).text = "Created by: ${model.createdBy}"
 

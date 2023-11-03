@@ -80,7 +80,7 @@ class MyProfileActivity : BaseActivity() {
                 if (data != null){
                     mSelectedImageUri = data.data
                     try {
-                        binding?.ivProfileUserImage?.let { Glide.with(this).load(mSelectedImageUri).into(it) }
+                        binding?.ivProfileUserImage?.let { Glide.with(this).load(mSelectedImageUri).placeholder(R.drawable.ic_user_place_holder).into(it) }
                     } catch (e: IOException){
                         e.printStackTrace()
                     }
@@ -123,7 +123,7 @@ class MyProfileActivity : BaseActivity() {
         if (loggedInUser != null) {
             mUserDetails = loggedInUser
         }
-        binding?.ivProfileUserImage?.let { Glide.with(this).load(loggedInUser?.image).into(it) }
+        binding?.ivProfileUserImage?.let { Glide.with(this).load(loggedInUser?.image).placeholder(R.drawable.ic_user_place_holder).into(it) }
         binding?.etName?.setText(loggedInUser?.name)
         binding?.etEmail?.setText(loggedInUser?.email)
         if (loggedInUser?.mobile != 0L) {

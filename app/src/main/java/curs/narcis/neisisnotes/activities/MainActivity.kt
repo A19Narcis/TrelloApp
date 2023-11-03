@@ -127,7 +127,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             FirestoreClass().getBoardsList(this)
         }
         mUsername = loggedInUser?.name.toString()
-        binding?.navView?.getHeaderView(0)?.findViewById<CircleImageView>(R.id.iv_user_image)?.let { Glide.with(this).load(loggedInUser!!.image).into(it) }
+        binding?.navView?.getHeaderView(0)?.findViewById<CircleImageView>(R.id.iv_user_image)?.let { Glide.with(this).load(loggedInUser!!.image).placeholder(R.drawable.ic_user_place_holder).into(it) }
         binding?.navView?.getHeaderView(0)?.findViewById<TextView>(R.id.tv_username)?.text = loggedInUser?.name
     }
 
