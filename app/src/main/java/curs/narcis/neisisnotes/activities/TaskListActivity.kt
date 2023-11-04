@@ -106,8 +106,6 @@ class TaskListActivity : BaseActivity() {
         hideProgressDialog()
         setActionBar()
 
-
-
         showProgressDialog(resources.getString(R.string.please_wait))
         FirestoreClass().getAssignedMembersListDetails(this, mBoardDetails.assignedTo)
     }
@@ -176,5 +174,12 @@ class TaskListActivity : BaseActivity() {
 
         val adapter = TaskListItemsAdapter(this, mBoardDetails.taskList)
         binding?.rvTaskList?.adapter = adapter
+    }
+
+    fun updateCardsInTaskList(taskListPosition: Int, cards: ArrayList<Card>){
+        mBoardDetails.taskList.removeAt(mBoardDetails.taskList.size - 1)
+        mBoardDetails.taskList[taskListPosition].cards = cards
+
+        FirestoreClass().addUpdateTaskList(this, mBoardDetails)
     }
 }

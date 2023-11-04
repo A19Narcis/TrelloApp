@@ -113,15 +113,24 @@ class FirestoreClass {
             }
     }
 
-    fun updateUserProfileData(activity: MyProfileActivity, userHashMap: HashMap<String, Any>) {
+    fun updateUserProfileData(activity: Activity, userHashMap: HashMap<String, Any>) {
         mFirestore.collection(Constants.USERS).document(getCurrentUserID()).update(userHashMap)
             .addOnSuccessListener {
                 Log.i(activity.javaClass.simpleName, "Profile updated")
                 Toast.makeText(activity, "Profile updated successfully!", Toast.LENGTH_LONG).show()
-                activity.profileUpdateSuccess()
+                if (activity is MainActivity){
+                    activity.tokenUpdateSuccess()
+                } else if (activity is MyProfileActivity){
+                    activity.profileUpdateSuccess()
+                }
             }
-            .addOnFailureListener {
-                e -> Log.e(activity.javaClass.simpleName, "Error while updating", e)
+            .addOnFailureListener { e ->
+                if (activity is MainActivity){
+                    activity.hideProgressDialog()
+                } else if (activity is MyProfileActivity){
+                    activity.hideProgressDialog()
+                }
+                Log.e(activity.javaClass.simpleName, "Error while updating", e)
             }
     }
 

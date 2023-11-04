@@ -1,6 +1,7 @@
 package curs.narcis.neisisnotes.activities
 
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -25,6 +26,10 @@ import curs.narcis.neisisnotes.models.SelectedMembers
 import curs.narcis.neisisnotes.models.Task
 import curs.narcis.neisisnotes.models.User
 import curs.narcis.neisisnotes.utils.Constants
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class CardDetailsActivity : BaseActivity() {
 
@@ -32,6 +37,8 @@ class CardDetailsActivity : BaseActivity() {
 
     private lateinit var mBoardDetails: Board
     private lateinit var membersDetailsList: ArrayList<User>
+    private var mSelectedDueDateMilliSeconds : Long = 0
+
     private var mTaskListPosition = -1
     private var mCardPosition = -1
     private var mSelectedColor: String = ""
@@ -63,12 +70,22 @@ class CardDetailsActivity : BaseActivity() {
             membersListDialog()
         }
 
+        binding?.tvSelectDueDate?.setOnClickListener {
+            showDataPicker()
+        }
+
         mSelectedColor = mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].labelColor
         if (mSelectedColor.isNotEmpty()){
             setColor()
         }
 
         setUpSelectedMembersList()
+        mSelectedDueDateMilliSeconds = mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].dueDate
+        if (mSelectedDueDateMilliSeconds > 0){
+            val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
+            val selectedDate = simpleDateFormat.format(Date(mSelectedDueDateMilliSeconds))
+            binding?.tvSelectDueDate?.text = selectedDate
+        }
     }
 
     private fun alertDialogForDeleteCard(cardName: String) {
@@ -180,7 +197,7 @@ class CardDetailsActivity : BaseActivity() {
     }
 
     private fun updateCardDetails(){
-        val card = Card(binding?.etNameCardDetails?.text.toString(), mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].createdBy, mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].assignedTo, mSelectedColor)
+        val card = Card(binding?.etNameCardDetails?.text.toString(), mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].createdBy, mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].assignedTo, mSelectedColor, mSelectedDueDateMilliSeconds)
         val taskList: ArrayList<Task> = mBoardDetails.taskList
         taskList.removeAt(taskList.size - 1)
         mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition] = card
@@ -278,5 +295,32 @@ class CardDetailsActivity : BaseActivity() {
             binding?.tvSelectMembers?.visibility = View.VISIBLE
             binding?.rvSelectedMembersList?.visibility = View.GONE
         }
+    }
+
+    private fun showDataPicker() {
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR) // Returns the value of the given calendar field. This indicates YEAR
+        val month = c.get(Calendar.MONTH) // This indicates the Month
+        val day = c.get(Calendar.DAY_OF_MONTH) // This indicates the Day
+
+        val dpd = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                // Here we have appended 0 if the selected day is smaller than 10 to make it double digit value.
+                val sDayOfMonth = if (dayOfMonth < 10) "0$dayOfMonth" else "$dayOfMonth"
+                // Here we have appended 0 if the selected month is smaller than 10 to make it double digit value.
+                val sMonthOfYear = if ((monthOfYear + 1) < 10) "0${monthOfYear + 1}" else "${monthOfYear + 1}"
+
+                val selectedDate = "$sDayOfMonth/$sMonthOfYear/$year"
+                binding?.tvSelectDueDate?.text = selectedDate
+
+                val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
+                val theDate = sdf.parse(selectedDate)
+
+                mSelectedDueDateMilliSeconds = theDate!!.time
+            },
+            year,
+            month,
+            day
+        )
+        dpd.show() // It is used to show the datePicker Dialog.
     }
 }

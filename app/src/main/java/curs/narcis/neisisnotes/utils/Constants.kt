@@ -32,6 +32,19 @@ object Constants {
 
     const val READ_STORAGE_PERMISSION = 1
 
+    const val NEISISNOTES_PREFERENCES: String = "NeisisnotesPrefs"
+    const val FCM_TOKEN:String = "fcmToken"
+    const val FCM_TOKEN_UPDATED:String = "fcmTokenUpdated"
+
+    const val FCM_BASE_URL:String = "https://fcm.googleapis.com/fcm/send"
+    const val FCM_AUTHORIZATION:String = "authorization"
+    const val FCM_KEY:String = "key"
+    const val FCM_SERVER_KEY:String = "AAAAlRJf4cU:APA91bHzhFmK5cgipFlP8Md-XXmBkbPabV7mANv3k0SwGUlo9gqVM1INGPyEdd4PX6TnyKImnmOnmWU-4BC6kLiE5AFmj56A7qGoj8-j2ZJaL7eOnl_s06Uu3_XotNv5171u6PUSNIU0"
+    const val FCM_KEY_TITLE:String = "title"
+    const val FCM_KEY_MESSAGE:String = "message"
+    const val FCM_KEY_DATA:String = "data"
+    const val FCM_KEY_TO:String = "to"
+
     fun getFileExtension(activity: Activity, uri: Uri?): String? {
         return MimeTypeMap.getSingleton().getExtensionFromMimeType(activity.contentResolver.getType(uri!!))
     }
