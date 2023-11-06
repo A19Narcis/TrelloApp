@@ -27,7 +27,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         remoteMessage.data.isEmpty().let {
             Log.d(TAG, "Message data Payload: ${remoteMessage.data}")
 
-            val title = remoteMessage.data[Constants.FCM_KEY]!!
+            val title = remoteMessage.data[Constants.FCM_KEY_TITLE]!!
             val message = remoteMessage.data[Constants.FCM_KEY_MESSAGE]!!
 
             sendNotification(title, message)

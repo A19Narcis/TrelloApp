@@ -303,7 +303,7 @@ class CardDetailsActivity : BaseActivity() {
         val month = c.get(Calendar.MONTH) // This indicates the Month
         val day = c.get(Calendar.DAY_OF_MONTH) // This indicates the Day
 
-        val dpd = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+        val dpd = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
                 // Here we have appended 0 if the selected day is smaller than 10 to make it double digit value.
                 val sDayOfMonth = if (dayOfMonth < 10) "0$dayOfMonth" else "$dayOfMonth"
                 // Here we have appended 0 if the selected month is smaller than 10 to make it double digit value.

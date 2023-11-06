@@ -117,7 +117,6 @@ class FirestoreClass {
         mFirestore.collection(Constants.USERS).document(getCurrentUserID()).update(userHashMap)
             .addOnSuccessListener {
                 Log.i(activity.javaClass.simpleName, "Profile updated")
-                Toast.makeText(activity, "Profile updated successfully!", Toast.LENGTH_LONG).show()
                 if (activity is MainActivity){
                     activity.tokenUpdateSuccess()
                 } else if (activity is MyProfileActivity){

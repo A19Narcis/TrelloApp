@@ -175,6 +175,7 @@ class MyProfileActivity : BaseActivity() {
 
 
     fun profileUpdateSuccess(){
+        Toast.makeText(this@MyProfileActivity, "Profile updated successfully!", Toast.LENGTH_LONG).show()
         hideProgressDialog()
         setResult(Activity.RESULT_OK)
         finish()

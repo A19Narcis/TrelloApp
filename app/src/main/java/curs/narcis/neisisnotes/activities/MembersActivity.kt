@@ -135,6 +135,7 @@ class MembersActivity : BaseActivity() {
         setUpMembersList(mAssignedMembersList)
 
         SendNotificationToUserCoroutine(mBoardDetails.name!!, user.fcmToken!!).execute()
+
     }
 
     private inner class SendNotificationToUserCoroutine(val boardName: String, val token: String) {

@@ -59,7 +59,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         mSharedPreferences = this.getSharedPreferences(Constants.NEISISNOTES_PREFERENCES, Context.MODE_PRIVATE)
         val tokenUpdated = mSharedPreferences.getBoolean(Constants.FCM_TOKEN_UPDATED, false)
         if (tokenUpdated){
-            showProgressDialog(resources.getString(R.string.please_wait))
             FirestoreClass().loadUserData(this, true)
         } else {
             FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener {
@@ -147,9 +146,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     fun updateNavigationUserDetails(loggedInUser: User?, readBoard: Boolean) {
-        hideProgressDialog()
         if (readBoard){
-            showProgressDialog(resources.getString(R.string.please_wait))
             FirestoreClass().getBoardsList(this)
         }
         mUsername = loggedInUser?.name.toString()
@@ -158,7 +155,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     fun populateBoardListToUI(boardList: ArrayList<Board>) {
-        hideProgressDialog()
         if (boardList.size > 0){
             binding?.rvBoardsList?.visibility = View.VISIBLE
             binding?.tvNoBoardsAvailable?.visibility = View.GONE
@@ -184,7 +180,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     fun tokenUpdateSuccess() {
-        hideProgressDialog()
         val editor : SharedPreferences.Editor = mSharedPreferences.edit()
         editor.putBoolean(Constants.FCM_TOKEN_UPDATED, true)
         editor.apply()
